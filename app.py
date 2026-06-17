@@ -98,67 +98,33 @@ def home():
         prompt_creativity = "中等"
         judicial_tendency = "存在争议"
 
-        # 四维版权认定模型
+        # TRG V2.0 多因子版权认定模型
 
-        # 初始化匹配变量（避免未赋值报错）
         human_match = 0
         originality_match = 0
         ai_match = 0
         complexity_match = 0
 
-        human_keywords = [
-            "修改", "设计", "原创", "优化",
-            "多轮", "调整", "重构", "人工",
-            "反复修改", "草图", "构思", "策划",
-            "导演", "拍摄", "后期", "编排",
-            "创作", "打磨", "润色", "训练",
-            "photoshop", "editing", "manual",
-            "post-edit", "post-editing",
-            "multi-round", "prompt engineering",
-            "human creator", "redraw",
-            "creative direction"
-        ]
+        text_lower = text.lower()
 
-        originality_keywords = [
-            "独特", "创新", "个性化",
-            "创意", "原创表达", "世界观",
-            "角色设定", "叙事", "镜头语言",
-            "情绪表达", "视觉风格", "美学",
-            "故事结构", "艺术表达",
-            "original", "cinematic",
-            "architecture composition",
-            "worldbuilding", "visual storytelling",
-            "concept art", "creative"
-        ]
+        def count_features(feature_dict):
+            score = 0
+            detected = []
 
-        ai_keywords = [
-            "ChatGPT", "Midjourney", "AI生成",
-            "AIGC", "自动生成", "Stable Diffusion",
-            "Claude", "Gemini", "文心一言",
-            "一键生成", "直接生成", "AI完成",
-            "无需修改", "自动创作",
-            "fully generated", "automatic",
-            "one click", "without editing"
-        ]
+            for label, config in feature_dict.items():
+                hit = False
 
-        complexity_keywords = [
-            "结构", "故事", "视觉设计",
-            "交互", "世界观", "品牌体系",
-            "角色设定", "叙事", "镜头语言",
-            "多层", "复杂", "系统化",
-            "人物关系", "时间线", "空间设计",
-            "architecture", "cinematic lighting",
-            "visual storytelling", "scene design",
-            "composition", "conceptual"
-        ]
+                for kw in config["keywords"]:
+                    if kw.lower() in text_lower:
+                        hit = True
+                        break
 
-        # 基础分（避免大部分案例出现极低分）
-        base_score = 55
+                if hit:
+                    score += config["weight"]
+                    detected.append(label)
 
-        # 创作特征缓存
-        detected_dimensions = []
+            return score, detected
 
-        # 智能语义识别函数
         def semantic_match(keyword_group, content):
             score = 0
             matched = []
@@ -170,22 +136,61 @@ def home():
 
             return score, matched
 
-        # 智能语义分析
+        human_features = {
+            "人工深度修改": {"weight": 18, "keywords": ["人工修改", "反复修改", "后期", "重构", "润色"]},
+            "创作策划": {"weight": 15, "keywords": ["构思", "策划", "设计", "导演", "脚本"]},
+            "创作控制": {"weight": 15, "keywords": ["调整", "多轮", "迭代", "优化", "编排"]},
+            "专业工具参与": {"weight": 12, "keywords": ["photoshop", "ps", "剪辑", "editing"]}
+        }
 
-        human_match, human_detected = semantic_match(human_keywords, text)
-        originality_match, originality_detected = semantic_match(originality_keywords, text)
-        ai_match, ai_detected = semantic_match(ai_keywords, text)
-        complexity_match, complexity_detected = semantic_match(complexity_keywords, text)
+        originality_features = {
+            "原创世界观": {"weight": 18, "keywords": ["世界观", "原创表达", "角色设定"]},
+            "独立创意": {"weight": 15, "keywords": ["独特", "创新", "创意", "个性化"]},
+            "艺术表达": {"weight": 12, "keywords": ["视觉风格", "美学", "叙事", "镜头语言"]},
+            "复杂内容设计": {"weight": 10, "keywords": ["故事结构", "concept art", "worldbuilding"]}
+        }
 
-        human_score = min(100, 25 + human_match * 10)
-        originality_score = min(100, 20 + originality_match * 10)
-        ai_score = min(100, ai_match * 12)
-        complexity_score = min(100, 15 + complexity_match * 8)
+        ai_features = {
+            "直接生成": {"weight": 20, "keywords": ["一键生成", "直接生成", "无需修改"]},
+            "高度依赖AI": {"weight": 18, "keywords": ["完全由ai", "fully generated", "automatic"]},
+            "生成式工具": {"weight": 10, "keywords": ["chatgpt", "midjourney", "claude", "gemini", "stable diffusion"]}
+        }
 
-        detected_dimensions.extend(human_detected)
-        detected_dimensions.extend(originality_detected)
-        detected_dimensions.extend(ai_detected)
-        detected_dimensions.extend(complexity_detected)
+        complexity_features = {
+            "系统结构": {"weight": 18, "keywords": ["系统化", "品牌体系", "交互"]},
+            "叙事复杂度": {"weight": 15, "keywords": ["人物关系", "时间线", "多层"]},
+            "视觉复杂度": {"weight": 12, "keywords": ["视觉设计", "scene design", "composition"]},
+            "空间与架构": {"weight": 10, "keywords": ["architecture", "空间设计"]}
+        }
+
+        human_score, human_detected = count_features(human_features)
+        originality_score, originality_detected = count_features(originality_features)
+        ai_score, ai_detected = count_features(ai_features)
+        complexity_score, complexity_detected = count_features(complexity_features)
+
+        text_length = len(text)
+
+        if text_length > 800:
+            complexity_score += 10
+            originality_score += 5
+        elif text_length > 300:
+            complexity_score += 5
+
+        if ("人工修改" in text or "多轮" in text) and ("chatgpt" in text_lower or "midjourney" in text_lower):
+            human_score += 12
+            originality_score += 8
+
+        human_score = min(human_score, 100)
+        originality_score = min(originality_score, 100)
+        ai_score = min(ai_score, 100)
+        complexity_score = min(complexity_score, 100)
+
+        detected_dimensions = (
+            human_detected +
+            originality_detected +
+            ai_detected +
+            complexity_detected
+        )
 
         # Prompt创造性分析
         high_prompt_keywords = [
@@ -220,31 +225,34 @@ def home():
         else:
             judicial_tendency = "存在法律争议"
 
-        # 可版权性综合计算（研究型辅助分析）
+        # TRG V2.0 综合评价模型
+
+        human_weight = 0.35
+        originality_weight = 0.30
+        complexity_weight = 0.20
+        ai_penalty_weight = 0.15
+
         copyright_score = (
-            base_score +
-            human_score * 0.22 +
-            originality_score * 0.22 +
-            complexity_score * 0.16 -
-            ai_score * 0.08
+            human_score * human_weight +
+            originality_score * originality_weight +
+            complexity_score * complexity_weight -
+            ai_score * ai_penalty_weight
         )
 
-        # 人工深度参与额外加分
-        deep_human_keywords = [
-            "photoshop", "multi-round", "人工修改",
-            "post-editing", "prompt engineering",
-            "原创", "重构"
-        ]
+        collaboration_bonus = 0
 
-        bonus = 0
+        if human_score >= 40 and originality_score >= 40:
+            collaboration_bonus += 8
 
-        for word in deep_human_keywords:
-            if word.lower() in text.lower():
-                bonus += 4
+        if complexity_score >= 50:
+            collaboration_bonus += 5
 
-        copyright_score += bonus
+        if text_length >= 500:
+            collaboration_bonus += 4
 
-        copyright_score = int(max(15, min(copyright_score, 95)))
+        copyright_score += collaboration_bonus + 25
+
+        copyright_score = int(max(20, min(copyright_score, 98)))
 
         # 研究参考等级判断
         if copyright_score >= 80:
@@ -277,10 +285,10 @@ def home():
         complexity_level = level_text(complexity_score)
 
         analysis_dimensions = {
-            "human": max(20, min(human_score, 100)),
-            "originality": max(20, min(originality_score, 100)),
-            "ai_dependency": max(15, min(ai_score, 100)),
-            "complexity": max(20, min(complexity_score, 100))
+            "human": human_score,
+            "originality": originality_score,
+            "ai_dependency": ai_score,
+            "complexity": complexity_score
         }
 
         if detected_dimensions:

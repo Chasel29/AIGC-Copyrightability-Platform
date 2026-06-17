@@ -31,6 +31,10 @@
 
         <div class="hero">
 
+            <div class="hero-orbit hero-orbit-1"></div>
+            <div class="hero-orbit hero-orbit-2"></div>
+            <div class="hero-grid"></div>
+
             <div class="tag">
                 AI Governance · Intellectual Property · AIGC Research
             </div>
@@ -40,8 +44,12 @@
             </div>
 
             <h1 class="hero-title">
-                AIGC作品可版权性认定平台
+                AIGC Copyrightability Intelligence Platform
             </h1>
+
+            <div class="hero-subtitle-cn">
+                AIGC作品可版权性智能分析与治理研究平台
+            </div>
 
             <p class="subtitle">
                 聚焦生成式人工智能时代的人机协同创作与知识产权治理问题，
@@ -49,26 +57,40 @@
                 对AIGC内容生成中的版权归属、风险识别与治理路径进行辅助研究与可视化展示。
             </p>
 
-            <div class="hero-mini-stats">
+            <div class="command-center">
 
-                <div class="mini-stat">
-                    <span class="mini-number">632+</span>
-                    <span class="mini-text">Valid Research Samples</span>
+                <div class="command-card">
+                    <span>TRG Engine</span>
+                    <strong>ONLINE</strong>
                 </div>
 
-                <div class="mini-stat">
-                    <span class="mini-number">52</span>
-                    <span class="mini-text">Typical AIGC Cases</span>
+                <div class="command-card">
+                    <span>Governance Model</span>
+                    <strong>V3.0</strong>
                 </div>
 
-                <div class="mini-stat">
-                    <span class="mini-number">TRG</span>
-                    <span class="mini-text">Governance Perspective</span>
+                <div class="command-card">
+                    <span>Research Status</span>
+                    <strong>ACTIVE</strong>
                 </div>
 
-                <div class="mini-stat">
-                    <span class="mini-number">AI+</span>
-                    <span class="mini-text">Research Visualization</span>
+            </div>
+
+            <div class="hero-badge-row">
+
+                <div class="metric-box">
+                    <div class="metric-number">TRG 2.0</div>
+                    <div class="metric-label">Research Engine</div>
+                </div>
+
+                <div class="metric-box">
+                    <div class="metric-number">Human × AI</div>
+                    <div class="metric-label">Collaboration Model</div>
+                </div>
+
+                <div class="metric-box">
+                    <div class="metric-number">Multi-Factor</div>
+                    <div class="metric-label">Copyright Assessment</div>
                 </div>
 
             </div>
@@ -137,8 +159,10 @@
         <div class="framework-section">
 
             <div class="framework-title">
-                Four-Dimensional Copyrightability Framework
+                TRG Intelligence Matrix
             </div>
+
+            <div class="matrix-line"></div>
 
             <div class="section-desc framework-desc">
                 基于人类参与程度、独创性表达、AI依赖程度与表达复杂度四个维度，
@@ -148,25 +172,25 @@
             <div class="dimension-grid">
 
                 <div class="dimension-card">
-                    <div class="dimension-icon">◉</div>
+                    <div class="dimension-icon">⬢</div>
                     <div class="dimension-title">Human Participation</div>
                     <div class="dimension-subtitle">人工参与程度</div>
                 </div>
 
                 <div class="dimension-card">
-                    <div class="dimension-icon">△</div>
+                    <div class="dimension-icon">◈</div>
                     <div class="dimension-title">Original Expression</div>
                     <div class="dimension-subtitle">独创性表达</div>
                 </div>
 
                 <div class="dimension-card">
-                    <div class="dimension-icon">◌</div>
+                    <div class="dimension-icon">◎</div>
                     <div class="dimension-title">AI Dependency</div>
                     <div class="dimension-subtitle">AI依赖程度</div>
                 </div>
 
                 <div class="dimension-card">
-                    <div class="dimension-icon">⬡</div>
+                    <div class="dimension-icon">✦</div>
                     <div class="dimension-title">Expression Complexity</div>
                     <div class="dimension-subtitle">表达复杂度</div>
                 </div>
@@ -265,7 +289,22 @@
 
         {% if result %}
 
+        <div class="analysis-hub">
+
+            <div class="hub-ring"></div>
+
+            <div class="hub-core">
+                <div class="hub-value">{{ score }}</div>
+                <div class="hub-label">TRG SCORE</div>
+            </div>
+
+        </div>
+
         <div class="dashboard">
+            <div class="card big-card">
+                <h3>TRG Governance Engine</h3>
+                <p>Technology · Rights · Governance</p>
+            </div>
 
             <div class="card big-card">
                 <h3>Copyrightability Score</h3>
@@ -288,9 +327,10 @@
 
             <div class="result-header">
                 <div class="result-dot"></div>
-                <h2>AIGC Copyrightability Research Report</h2>
+                <h2>AIGC Copyrightability Intelligence Report</h2>
             </div>
 
+            <div class="research-grid-overlay"></div>
             <div class="result-content">
                 <p>{{ result }}</p>
             </div>
@@ -303,10 +343,13 @@
 
         <div class="research-banner">
 
+            <div class="bg-blur blur1"></div>
+            <div class="bg-blur blur2"></div>
+
             <div class="research-content">
 
                 <div class="research-label">
-                    Experimental Governance Research Framework
+                    Academic Research · Governance Intelligence · Human–AI Collaboration
                 </div>
 
                 <h2 class="trg-title">
@@ -323,10 +366,30 @@
 
         </div>
 
+        <div class="future-banner">
+
+            <div class="future-item">
+                <span>Technology</span>
+            </div>
+
+            <div class="future-item">
+                <span>Rights</span>
+            </div>
+
+            <div class="future-item">
+                <span>Governance</span>
+            </div>
+
+            <div class="future-item">
+                <span>Human × AI</span>
+            </div>
+
+        </div>
+
         <div class="footer">
 
             <p>
-                China Jiliang University · “People Who Grew Up Watching AIGC” Team · AIGC Governance & Intellectual Property Research Project
+                China Jiliang University · AIGC Governance & Intellectual Property Research Project · TRG Copyrightability Intelligence Platform
             </p>
 
         </div>
